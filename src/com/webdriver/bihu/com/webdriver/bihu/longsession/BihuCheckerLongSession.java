@@ -200,7 +200,14 @@ public class BihuCheckerLongSession extends Thread {
                         sleep(1000);
                         zan.click();
                         sleep(1000);
+                        zan.click();
+                        sleep(1000);
+                        zan.click();
+                        sleep(1000);
+                        zan.click();
+                        sleep(1000);
                         System.out.println(zanNum + ", 没点过赞，点赞。 *****计数，第 " + counter + " 次*****");
+
                         color2 = getZanColor(driver.findElement(By.xpath(paper)));
                         System.out.println("color2 after zan: " + color2.toString());
                     }
