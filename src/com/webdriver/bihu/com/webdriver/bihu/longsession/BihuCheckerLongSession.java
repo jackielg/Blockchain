@@ -3,10 +3,13 @@ package com.webdriver.bihu.com.webdriver.bihu.longsession;
 import com.webdriver.bihu.TimeCheck;
 import org.junit.Assert;
 import org.openqa.selenium.*;
+import org.openqa.selenium.Dimension;
+import org.openqa.selenium.Point;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.awt.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -20,7 +23,7 @@ import java.util.function.Function;
 public class BihuCheckerLongSession extends Thread {
     private static String style = "HH:mm:ss";
     private static String startTime1 = "05:30:00";
-    private static String endTime1 = "19:30:00";
+    private static String endTime1 = "09:30:00";
     private WebDriver driver;
     private String baseUrl;
     private boolean acceptNextAlert = true;
@@ -97,7 +100,7 @@ public class BihuCheckerLongSession extends Thread {
     public void runCheck() throws Exception {
 
         // 检查分钟间隔数
-        final long timeInterval = 3 * 60 * 1000;
+        final long timeInterval = 2 * 60 * 1000;
         final long speedInterval = 1 * 60 * 1000;
 
         while (true) {
@@ -123,7 +126,7 @@ public class BihuCheckerLongSession extends Thread {
     private void checkFiveZan() throws InterruptedException {
 
         driver.findElement(By.cssSelector("img[alt=\"Logo\"]")).click();
-        sleep(1000);
+        sleep(2000);
         driver.findElement(By.linkText("关注")).click();
 //        driver.findElement(By.linkText("推荐")).click();
         sleep(3000);
@@ -177,31 +180,48 @@ public class BihuCheckerLongSession extends Thread {
             String zanNum = "第" + count + "篇文章点赞数: " + zan.getText();
             int x = Integer.parseInt(zan.getText());
 
-            //取颜色
-            String color = zan.getCssValue("color");
-            color = color.substring(4, color.length() - 1);
-            String[] strs = color.split(",");
-//            for (int i = 0, len = strs.length; i < len; i++) {
-//                System.out.println(strs[i].toString());
-//            }
 
-
-            java.awt.Color color1 = new java.awt.Color(0, 123, 255); //点过赞的颜色
-            java.awt.Color color2 = new java.awt.Color(Integer.parseInt(strs[0].trim()), Integer.parseInt(strs[1].trim()), Integer.parseInt(strs[2].trim()));
+            //点过赞的颜色
+            java.awt.Color color1 = new java.awt.Color(0, 123, 255);
+            //取赞颜色
+            java.awt.Color color2 = getZanColor(zan);
+//            System.out.println("color2 original: " + color2.toString());
 
             //判断是否点过赞
             if (color1.equals(color2)) {
-                System.out.println(zanNum + ", 已点过赞。");
+                System.out.println(zanNum + ", 已点过赞。" + color2.toString());
             } else {
                 if (x < 500) {
-                    zan.click();
-                    System.out.println(zanNum + ", 没点过赞，点赞。");
+
+                    int counter = 0;
+                    while (!color1.equals(color2)) {
+                        counter++;
+                        zan.click();
+                        sleep(1000);
+                        zan.click();
+                        sleep(1000);
+                        System.out.println(zanNum + ", 没点过赞，点赞。 *****计数，第 " + counter + " 次*****");
+                        color2 = getZanColor(driver.findElement(By.xpath(paper)));
+                        System.out.println("color2 after zan: " + color2.toString());
+                    }
                 } else {
-                    System.out.println(zanNum + ", 没点过赞，大于500，跳过。");
+                    System.out.println(zanNum + ", 没点过赞，大于500，跳过。" + color2.toString());
                 }
                 sleep(2000);
             }
         }
+    }
+
+    private static Color getZanColor(WebElement zan) {
+        String color = zan.getCssValue("color");
+        color = color.substring(4, color.length() - 1);
+        String[] strs = color.split(",");
+        //            for (int i = 0, len = strs.length; i < len; i++) {
+//                System.out.println(strs[i].toString());
+//            }
+
+        java.awt.Color color2 = new java.awt.Color(Integer.parseInt(strs[0].trim()), Integer.parseInt(strs[1].trim()), Integer.parseInt(strs[2].trim()));
+        return color2;
     }
 
     public void closeOut() throws Exception {
