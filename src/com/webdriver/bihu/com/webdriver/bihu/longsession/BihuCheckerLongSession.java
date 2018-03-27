@@ -48,6 +48,18 @@ public class BihuCheckerLongSession extends Thread {
         wait.until(waitFn);
     }
 
+    private static Color getZanColor(WebElement zan) {
+        String color = zan.getCssValue("color");
+        color = color.substring(4, color.length() - 1);
+        String[] strs = color.split(",");
+        //            for (int i = 0, len = strs.length; i < len; i++) {
+//                System.out.println(strs[i].toString());
+//            }
+
+        java.awt.Color color2 = new java.awt.Color(Integer.parseInt(strs[0].trim()), Integer.parseInt(strs[1].trim()), Integer.parseInt(strs[2].trim()));
+        return color2;
+    }
+
     public void run() {
 
         try {
@@ -123,7 +135,7 @@ public class BihuCheckerLongSession extends Thread {
         }
     }
 
-    private void checkFiveZan() throws InterruptedException {
+    private void checkFiveZan() throws Exception {
 
         driver.findElement(By.cssSelector("img[alt=\"Logo\"]")).click();
         sleep(2000);
@@ -136,20 +148,6 @@ public class BihuCheckerLongSession extends Thread {
         Date day = new Date();
         SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 //        System.out.println(df.format(day));
-
-
-        for (int second = 0; ; second++) {
-            if (second >= 60) Assert.fail("timeout");
-            try {
-                if (isElementPresent(By.xpath("//div[@id='root']/div/div/div/div[2]/div/ul[2]/div/div/div[2]/div/p[2]"))) {
-                    break;
-                } else {
-                    driver.navigate().refresh();
-                }
-            } catch (Exception e) {
-            }
-            sleep(1000);
-        }
 
 
         //当前时间
@@ -185,31 +183,36 @@ public class BihuCheckerLongSession extends Thread {
             java.awt.Color color1 = new java.awt.Color(0, 123, 255);
             //取赞颜色
             java.awt.Color color2 = getZanColor(zan);
-//            System.out.println("color2 original: " + color2.toString());
 
             //判断是否点过赞
             if (color1.equals(color2)) {
                 System.out.println(zanNum + ", 已点过赞。" + color2.toString());
             } else {
                 if (x < 500) {
-
-                    int counter = 0;
                     while (!color1.equals(color2)) {
-                        counter++;
+                        System.out.println("********** " + zanNum + ", 没点过赞，第一次点赞。赞前颜色 = " + color2.toString());
                         zan.click();
-                        sleep(1000);
+                        sleep(500);
                         zan.click();
-                        sleep(1000);
+                        sleep(500);
                         zan.click();
-                        sleep(1000);
-                        zan.click();
-                        sleep(1000);
-                        zan.click();
-                        sleep(1000);
-                        System.out.println(zanNum + ", 没点过赞，点赞。 *****计数，第 " + counter + " 次*****");
-
                         color2 = getZanColor(driver.findElement(By.xpath(paper)));
-                        System.out.println("color2 after zan: " + color2.toString());
+                        System.out.println("********** " + zanNum + ", 没点过赞，第一次点赞。赞后颜色 = " + color2.toString());
+
+
+                        driver.navigate().refresh();
+                        sleep(2000);
+                        waitForPageLoad(driver);
+                        waitForElement(driver, By.xpath(paper));
+
+                        System.out.println("********** " + zanNum + ", 没点过赞，刷新后再赞。赞前颜色 = " + color2.toString());
+                        zan.click();
+                        sleep(500);
+                        zan.click();
+                        sleep(500);
+                        zan.click();
+                        color2 = getZanColor(driver.findElement(By.xpath(paper)));
+                        System.out.println("********** " + zanNum + ", 没点过赞，刷新后再赞。赞后颜色 = " + color2.toString());
                     }
                 } else {
                     System.out.println(zanNum + ", 没点过赞，大于500，跳过。" + color2.toString());
@@ -219,16 +222,19 @@ public class BihuCheckerLongSession extends Thread {
         }
     }
 
-    private static Color getZanColor(WebElement zan) {
-        String color = zan.getCssValue("color");
-        color = color.substring(4, color.length() - 1);
-        String[] strs = color.split(",");
-        //            for (int i = 0, len = strs.length; i < len; i++) {
-//                System.out.println(strs[i].toString());
-//            }
-
-        java.awt.Color color2 = new java.awt.Color(Integer.parseInt(strs[0].trim()), Integer.parseInt(strs[1].trim()), Integer.parseInt(strs[2].trim()));
-        return color2;
+    private void waitForElement(WebDriver driver, By by) throws Exception {
+        for (int second = 0; ; second++) {
+            if (second >= 60) Assert.fail("timeout");
+            try {
+                if (isElementPresent(by)) {
+                    break;
+                } else {
+                    driver.navigate().refresh();
+                }
+            } catch (Exception e) {
+            }
+            sleep(1000);
+        }
     }
 
     public void closeOut() throws Exception {

@@ -13,7 +13,7 @@ public class HashWorldRunner {
         SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
         //启动时间(秒)
-        Date startDate = df.parse("2018/03/26 00:05:00");
+        Date startDate = df.parse("2018/03/28 00:05:00");
         long startTime = (startDate.getTime() - System.currentTimeMillis()) / 1000;
 
         //间隔时间(秒)

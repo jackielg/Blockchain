@@ -1,7 +1,5 @@
 package com.webdriver.bihu.com.webdriver.bihu.longsession;
 
-import com.webdriver.bihu.BihuChecker;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 
