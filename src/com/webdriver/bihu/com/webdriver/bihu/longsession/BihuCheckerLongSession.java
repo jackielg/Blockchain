@@ -201,9 +201,10 @@ public class BihuCheckerLongSession extends Thread {
 
 
                         driver.navigate().refresh();
-                        sleep(2000);
+                        sleep(3000);
                         waitForPageLoad(driver);
                         waitForElement(driver, By.xpath(paper));
+                        zan = driver.findElement(By.xpath(paper));
 
                         System.out.println("********** " + zanNum + ", 没点过赞，刷新后再赞。赞前颜色 = " + color2.toString());
                         zan.click();
