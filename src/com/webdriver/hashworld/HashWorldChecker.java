@@ -1,7 +1,8 @@
 package com.webdriver.hashworld;
 
+import org.junit.Assert;
 import org.openqa.selenium.*;
-import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.*;
@@ -20,10 +21,12 @@ import static org.junit.Assert.fail;
  */
 public class HashWorldChecker {
 
-    public static String fileIn = "C:/DevTools/Blockchain/src/com/webdriver/hashworld/CheckNum.txt";
+    //    public static String fileIn = "C:/DevTools/Blockchain/src/com/webdriver/hashworld/CheckNum.txt";
+    public static String fileIn = "/Users/Jackie.Liu/DevTools/Blockchain/src/com/webdriver/hashworld/CheckNum.txt";
     static Date day = new Date();
     static SimpleDateFormat df_forFile = new SimpleDateFormat("yyyy-MM-dd");
-    public static String fileOut = "C:/DevTools/Blockchain/src/com/webdriver/hashworld/CheckedNum " + df_forFile.format(day) + ".txt";
+    //    public static String fileOut = "C:/DevTools/Blockchain/src/com/webdriver/hashworld/CheckedNum " + df_forFile.format(day) + ".txt";
+    public static String fileOut = "/Users/Jackie.Liu/DevTools/Blockchain/src/com/webdriver/hashworld/CheckedNum " + df_forFile.format(day) + ".txt";
     private static Map<String, String> Balance = new HashMap<String, String>();
     private static Integer count = 0;
     private WebDriver driver;
@@ -144,8 +147,8 @@ public class HashWorldChecker {
     }
 
     public void init() throws Exception {
-        driver = new FirefoxDriver();
-//        driver = new ChromeDriver();
+//        driver = new FirefoxDriver();
+        driver = new ChromeDriver();
         baseUrl = "https://game.hashworld.top/#!/register";
         driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
         driver.manage().window().setPosition(new Point(0, 0)); //指定窗口坐标
@@ -169,15 +172,7 @@ public class HashWorldChecker {
         sleep(1000);
 
         waitForPageLoad(driver);
-//        driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
-        for (int second = 0; ; second++) {
-            if (second >= 60) fail("timeout");
-            try {
-                if (isElementPresent(By.cssSelector("span.help"))) break;
-            } catch (Exception e) {
-            }
-            sleep(1000);
-        }
+        waitForElement(driver, By.cssSelector("span.help"));
     }
 
     public void runCheck(String loginNum) throws Exception {
@@ -201,63 +196,73 @@ public class HashWorldChecker {
 //        System.out.println("chance = " + chance);
 
 
+        //点击前3个图片
+        String[] papers = new String[3];
+        papers[0] = "//hw-treasure-block/div/img";
+        papers[1] = "//hw-treasure-block[2]/div/img";
+        papers[2] = "//hw-treasure-block[3]/div/img";
+
         for (int i = 0; i < b; i++) {
             //图片操作
-            sleep(3000);
+            sleep(1000);
             waitForPageLoad(driver);
-//            driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
-            driver.findElement(By.cssSelector("img.ng-scope")).click();  //点击地标
+            waitForElement(driver, By.xpath(papers[i]));
+            driver.findElement(By.xpath(papers[i])).click();  //点击地标
 
 
-            sleep(3000);
+            sleep(1000);
             waitForPageLoad(driver);
-//            driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
-            driver.findElement(By.xpath("//div[3]/div[2]/img")).click();  //开
+            waitForElement(driver, By.xpath("//div[3]/div[2]/div"));
+            driver.findElement(By.xpath("//div[3]/div[2]/div")).click();  //开
 
 
-            sleep(3000);
+            sleep(1000);
             waitForPageLoad(driver);
-//            driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
-            driver.findElement(By.cssSelector("button")).click();  //返回
+            waitForElement(driver, By.xpath("//button"));
+            driver.findElement(By.xpath("//button")).click();  //返回
 
-
-            for (int second = 0; ; second++) {
-                if (second >= 60) fail("timeout");
-                try {
-                    if (isElementPresent(By.cssSelector("span.help"))) break;
-                } catch (Exception e) {
-                }
-                sleep(1000);
-            }
+            waitForElement(driver, By.cssSelector("span.help"));
         }
 
 
         //点击标签“我”
         sleep(1000);
         waitForPageLoad(driver);
-//        driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
+        waitForElement(driver, By.xpath("//div[3]/img"));
         driver.findElement(By.xpath("//div[3]/img")).click();
 
 
         //点击“我的钱包”，强制等2秒
-        sleep(3000);
+        sleep(2000);
         waitForPageLoad(driver);
-//        driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
-        driver.findElement(By.cssSelector("div.perState.ng-scope")).click();
+        waitForElement(driver, By.xpath("//hw-my/div[2]/div"));
+        driver.findElement(By.xpath("//hw-my/div[2]/div")).click();
+//        driver.findElement(By.cssSelector("div.perState.ng-scope")).click();
 
         //获取“估算钱包总资产”
 //        new WebDriverWait(driver, 5).until(ExpectedConditions.visibilityOf(driver.findElement(By.cssSelector("h1.wa-hl-money.ng-binding"))));
 
         waitForPageLoad(driver);
         String CNY = driver.findElement(By.cssSelector("h1.wa-hl-money.ng-binding")).getText();
-        if (CNY.contains("0.00")) {
-            //没取到金额，再强制等2秒
+
+        while (CNY.contains("0.00")) {
             sleep(2000);
             waitForPageLoad(driver);
+
             driver.navigate().refresh();
-            sleep(1000);
+            sleep(2000);
             CNY = driver.findElement(By.cssSelector("h1.wa-hl-money.ng-binding")).getText();
         }
+
+
+//        if (CNY.contains("0.00")) {
+//            //没取到金额，再强制等2秒
+//            sleep(2000);
+//            waitForPageLoad(driver);
+//            driver.navigate().refresh();
+//            sleep(2000);
+//            CNY = driver.findElement(By.cssSelector("h1.wa-hl-money.ng-binding")).getText();
+//        }
         outputNow(loginNum, CNY);
         System.out.println("### " + count + ": " + loginNum + " has " + CNY + ". ###");
         Balance.put(loginNum, CNY);
@@ -291,6 +296,21 @@ public class HashWorldChecker {
             return true;
         } catch (NoSuchElementException e) {
             return false;
+        }
+    }
+
+    private void waitForElement(WebDriver driver, By by) throws Exception {
+        for (int second = 0; ; second++) {
+            if (second >= 60) Assert.fail("timeout");
+            try {
+                if (isElementPresent(by)) {
+                    break;
+                } else {
+                    driver.navigate().refresh();
+                }
+            } catch (Exception e) {
+            }
+            sleep(1000);
         }
     }
 
