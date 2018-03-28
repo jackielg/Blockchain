@@ -225,21 +225,33 @@ public class BihuCheckerOpenPage extends Thread {
             //点赞按钮
             WebElement iZan = driver.findElement(By.xpath("//div[@id='root']/div/div/div/div/div[2]/div/div/div[5]/div/div[2]/button"));
 
+            //点过赞的颜色
+            java.awt.Color color1 = new java.awt.Color(0, 123, 255);
+            //取赞颜色
+            java.awt.Color color2 = getZanColor(iZan);
             String zanNum = iZan.getText();
-            System.out.println("********** 没点过赞，第一次点赞。赞前数： " + zanNum);
+            System.out.println("********** 没点过赞。内部赞，赞前数值： " + zanNum + ", 赞前颜色："+ color2.toString());
 
-            iZan.click();
             try {
-                sleep(2000);
+                iZan.click();
+                sleep(200);
+                iZan.click();
+                sleep(200);
+                iZan.click();
+                sleep(200);
+                iZan.click();
+                sleep(200);
+                iZan.click();
+                sleep(200);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+            color2 = getZanColor(iZan); //赞后颜色
             String afterZan = iZan.getText();
-            System.out.println("********** 没点过赞，第一次点赞。赞后数： " + afterZan);
-
+            System.out.println("********** 没点过赞。内部赞，赞后数值： " + afterZan + ", 赞后颜色："+ color2.toString());
 
             while (zanNum.equals(afterZan)) {
-                System.out.println("********** 没点过赞，第一次点赞不成功，循环点赞。赞前数： " + afterZan);
+                System.out.println("------------- 没点过赞。第一次点赞不成功，循环点赞，赞前数值： " + afterZan + ", 赞前颜色："+ color2.toString());
                 try {
                     driver.navigate().refresh();
                     sleep(2000);
@@ -251,6 +263,7 @@ public class BihuCheckerOpenPage extends Thread {
                     sleep(200);
                     iZan.click();
                     sleep(200);
+                    color2 = getZanColor(iZan); //赞后颜色
                     afterZan = iZan.getText();
 
                     sleep(2000);
@@ -258,7 +271,7 @@ public class BihuCheckerOpenPage extends Thread {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                System.out.println("********** 没点过赞，第一次点赞不成功，循环点赞。赞后数： " + afterZan);
+                System.out.println("------------- 没点过赞。第一次点赞不成功，循环点赞，赞后数值： " + afterZan + ", 赞后颜色："+ color2.toString());
             }
 
 

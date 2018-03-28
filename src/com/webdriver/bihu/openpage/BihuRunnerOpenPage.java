@@ -12,8 +12,8 @@ import static java.lang.Thread.sleep;
  */
 
 public class BihuRunnerOpenPage {
-    //    private static String fileIn = "C:/DevTools/Blockchain/src/com/webdriver/bihu/CheckNum.txt";
-    private static String fileIn = "/Users/Jackie.Liu/DevTools/Blockchain/src/com/webdriver/bihu/CheckNum.txt";
+        private static String fileIn = "C:/DevTools/Blockchain/src/com/webdriver/bihu/CheckNum.txt";
+//    private static String fileIn = "/Users/Jackie.Liu/DevTools/Blockchain/src/com/webdriver/bihu/CheckNum.txt";
     private static String[][] users = new String[2][2];
     private WebDriver driver;
     private String baseUrl;
@@ -38,8 +38,8 @@ public class BihuRunnerOpenPage {
                     e.printStackTrace();
                 }
 
-//                BihuCheckerOpenPage checker2 = new BihuCheckerOpenPage(users[1][0], users[1][1]);
-//                checker2.start();
+                BihuCheckerOpenPage checker2 = new BihuCheckerOpenPage(users[1][0], users[1][1]);
+                checker2.start();
             }
         };
         Thread thread = new Thread(runnable);
