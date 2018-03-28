@@ -38,6 +38,30 @@ public class BihuCheckerOpenPage extends Thread {
         this.password = password;
     }
 
+    private static void waitForPageLoad(WebDriver driver) {
+        Function<WebDriver, Boolean> waitFn = new Function<WebDriver, Boolean>() {
+            @Override
+            public Boolean apply(WebDriver driver) {
+                return ((JavascriptExecutor) driver).executeScript("return document.readyState")
+                        .equals("complete");
+            }
+        };
+        WebDriverWait wait = new WebDriverWait(driver, 30);
+        wait.until(waitFn);
+    }
+
+    private static Color getZanColor(WebElement zan) {
+        String color = zan.getCssValue("color");
+        color = color.substring(4, color.length() - 1);
+        String[] strs = color.split(",");
+//        for (int i = 0, len = strs.length; i < len; i++) {
+//            System.out.println(strs[i].toString());
+//        }
+
+        java.awt.Color color2 = new java.awt.Color(Integer.parseInt(strs[0].trim()), Integer.parseInt(strs[1].trim()), Integer.parseInt(strs[2].trim()));
+        return color2;
+    }
+
     public void run() {
 
         try {
@@ -230,7 +254,7 @@ public class BihuCheckerOpenPage extends Thread {
             //取赞颜色
             java.awt.Color color2 = getZanColor(iZan);
             String zanNum = iZan.getText();
-            System.out.println("********** 没点过赞。内部赞，赞前数值： " + zanNum + ", 赞前颜色："+ color2.toString());
+            System.out.println("********** 没点过赞。内部赞，赞前数值： " + zanNum + ", 赞前颜色：" + color2.toString());
 
             try {
                 iZan.click();
@@ -248,10 +272,10 @@ public class BihuCheckerOpenPage extends Thread {
             }
             color2 = getZanColor(iZan); //赞后颜色
             String afterZan = iZan.getText();
-            System.out.println("********** 没点过赞。内部赞，赞后数值： " + afterZan + ", 赞后颜色："+ color2.toString());
+            System.out.println("********** 没点过赞。内部赞，赞后数值： " + afterZan + ", 赞后颜色：" + color2.toString());
 
             while (zanNum.equals(afterZan)) {
-                System.out.println("------------- 没点过赞。第一次点赞不成功，循环点赞，赞前数值： " + afterZan + ", 赞前颜色："+ color2.toString());
+                System.out.println("------------- 没点过赞。第一次点赞不成功，循环点赞，赞前数值： " + afterZan + ", 赞前颜色：" + color2.toString());
                 try {
                     driver.navigate().refresh();
                     sleep(2000);
@@ -271,14 +295,14 @@ public class BihuCheckerOpenPage extends Thread {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                System.out.println("------------- 没点过赞。第一次点赞不成功，循环点赞，赞后数值： " + afterZan + ", 赞后颜色："+ color2.toString());
+                System.out.println("------------- 没点过赞。第一次点赞不成功，循环点赞，赞后数值： " + afterZan + ", 赞后颜色：" + color2.toString());
             }
 
 
             //评论内容
             driver.findElement(By.id("content")).click();
             driver.findElement(By.id("content")).clear();
-            if (this.username.substring(0,3).equals("136")) {
+            if (this.username.substring(0, 3).equals("136")) {
                 driver.findElement(By.id("content")).sendKeys("虚心使人进步，点赞积累财富！ " + afterZan);
             } else {
                 driver.findElement(By.id("content")).sendKeys("每天学习一点点，每天进步一点点！ " + afterZan);
@@ -339,30 +363,6 @@ public class BihuCheckerOpenPage extends Thread {
             }
             sleep(1000);
         }
-    }
-
-    private static void waitForPageLoad(WebDriver driver) {
-        Function<WebDriver, Boolean> waitFn = new Function<WebDriver, Boolean>() {
-            @Override
-            public Boolean apply(WebDriver driver) {
-                return ((JavascriptExecutor) driver).executeScript("return document.readyState")
-                        .equals("complete");
-            }
-        };
-        WebDriverWait wait = new WebDriverWait(driver, 30);
-        wait.until(waitFn);
-    }
-
-    private static Color getZanColor(WebElement zan) {
-        String color = zan.getCssValue("color");
-        color = color.substring(4, color.length() - 1);
-        String[] strs = color.split(",");
-//        for (int i = 0, len = strs.length; i < len; i++) {
-//            System.out.println(strs[i].toString());
-//        }
-
-        java.awt.Color color2 = new java.awt.Color(Integer.parseInt(strs[0].trim()), Integer.parseInt(strs[1].trim()), Integer.parseInt(strs[2].trim()));
-        return color2;
     }
 
 

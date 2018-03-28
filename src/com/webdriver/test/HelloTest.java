@@ -1,4 +1,4 @@
-package com.webdriver;
+package com.webdriver.test;
 
 public class HelloTest {
     public static void main(String[] args) {
