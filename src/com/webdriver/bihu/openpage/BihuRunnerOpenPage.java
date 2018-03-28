@@ -29,7 +29,6 @@ public class BihuRunnerOpenPage {
         Runnable runnable = new Runnable() {
             public void run() {
 
-                // ------- code for task to run
                 BihuCheckerOpenPage checker1 = new BihuCheckerOpenPage(users[0][0], users[0][1]);
                 checker1.start();
                 try {
