@@ -279,9 +279,9 @@ public class BihuCheckerOpenPage extends Thread {
             driver.findElement(By.id("content")).click();
             driver.findElement(By.id("content")).clear();
             if (this.username.substring(0,3).equals("136")) {
-                driver.findElement(By.id("content")).sendKeys("虚心使人进步，点赞积累财富！");
+                driver.findElement(By.id("content")).sendKeys("虚心使人进步，点赞积累财富！ " + afterZan);
             } else {
-                driver.findElement(By.id("content")).sendKeys("每天学习一点点，每天进步一点点！");
+                driver.findElement(By.id("content")).sendKeys("每天学习一点点，每天进步一点点！ " + afterZan);
             }
 
 

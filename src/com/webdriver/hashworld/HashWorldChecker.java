@@ -21,12 +21,12 @@ import static org.junit.Assert.fail;
  */
 public class HashWorldChecker {
 
-        public static String fileIn = "C:/DevTools/Blockchain/src/com/webdriver/hashworld/CheckNum.txt";
-//    public static String fileIn = "/Users/Jackie.Liu/DevTools/Blockchain/src/com/webdriver/hashworld/CheckNum.txt";
+    public static String fileIn = "src/com/webdriver/hashworld/CheckNum.txt";
+
     static Date day = new Date();
     static SimpleDateFormat df_forFile = new SimpleDateFormat("yyyy-MM-dd");
-        public static String fileOut = "C:/DevTools/Blockchain/src/com/webdriver/hashworld/CheckedNum " + df_forFile.format(day) + ".txt";
-//    public static String fileOut = "/Users/Jackie.Liu/DevTools/Blockchain/src/com/webdriver/hashworld/CheckedNum " + df_forFile.format(day) + ".txt";
+    public static String fileOut = "src/com/webdriver/hashworld/CheckedNum " + df_forFile.format(day) + ".txt";
+
     private static Map<String, String> Balance = new HashMap<String, String>();
     private static Integer count = 0;
     private WebDriver driver;
