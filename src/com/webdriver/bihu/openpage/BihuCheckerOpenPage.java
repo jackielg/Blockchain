@@ -1,4 +1,4 @@
-package com.webdriver.bihu.com.webdriver.bihu.longsession;
+package com.webdriver.bihu.openpage;
 
 import com.webdriver.bihu.TimeCheck;
 import org.junit.Assert;
@@ -12,6 +12,8 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.awt.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
@@ -20,7 +22,7 @@ import java.util.function.Function;
  */
 
 
-public class BihuCheckerLongSession extends Thread {
+public class BihuCheckerOpenPage extends Thread {
     private static String style = "HH:mm:ss";
     private static String startTime1 = "05:30:00";
     private static String endTime1 = "09:30:00";
@@ -31,33 +33,9 @@ public class BihuCheckerLongSession extends Thread {
     private String username = "";
     private String password = "";
 
-    public BihuCheckerLongSession(String username, String password) {
+    public BihuCheckerOpenPage(String username, String password) {
         this.username = username;
         this.password = password;
-    }
-
-    private static void waitForPageLoad(WebDriver driver) {
-        Function<WebDriver, Boolean> waitFn = new Function<WebDriver, Boolean>() {
-            @Override
-            public Boolean apply(WebDriver driver) {
-                return ((JavascriptExecutor) driver).executeScript("return document.readyState")
-                        .equals("complete");
-            }
-        };
-        WebDriverWait wait = new WebDriverWait(driver, 30);
-        wait.until(waitFn);
-    }
-
-    private static Color getZanColor(WebElement zan) {
-        String color = zan.getCssValue("color");
-        color = color.substring(4, color.length() - 1);
-        String[] strs = color.split(",");
-        for (int i = 0, len = strs.length; i < len; i++) {
-            System.out.println(strs[i].toString());
-        }
-
-        java.awt.Color color2 = new java.awt.Color(Integer.parseInt(strs[0].trim()), Integer.parseInt(strs[1].trim()), Integer.parseInt(strs[2].trim()));
-        return color2;
     }
 
     public void run() {
@@ -164,17 +142,21 @@ public class BihuCheckerLongSession extends Thread {
         papers[3] = "//div[@id='root']/div/div/div/div[2]/div/ul[2]/div[4]/div[2]/div/div[2]/div[2]/button[1]";
         papers[4] = "//div[@id='root']/div/div/div/div[2]/div/ul[2]/div[5]/div[2]/div/div[2]/div[2]/button[1]";
 
-//        System.out.println("第一篇文章点赞数 = " + driver.findElement(By.xpath(button1)).getText());
-//        System.out.println("第二篇文章点赞数 = " + driver.findElement(By.xpath(button2)).getText());
-//        System.out.println("第三篇文章点赞数 = " + driver.findElement(By.xpath(button3)).getText());
-//        System.out.println("第四篇文章点赞数 = " + driver.findElement(By.xpath(button4)).getText());
-//        System.out.println("第五篇文章点赞数 = " + driver.findElement(By.xpath(button5)).getText());
+        //前五篇文章缩略图
+        String[] pics = new String[5];
+        pics[0] = "//img[@alt='文章缩略图']";
+        pics[1] = "(//img[@alt='文章缩略图'])[2]";
+        pics[2] = "(//img[@alt='文章缩略图'])[3]";
+        pics[3] = "(//img[@alt='文章缩略图'])[4]";
+        pics[4] = "(//img[@alt='文章缩略图'])[5]";
+
 
         //点赞分析
         for (int i = 0; i < 5; i++) {
             String paper = papers[i];
             WebElement zan = driver.findElement(By.xpath(paper));
-            Integer count = i + 1;
+
+            int count = i + 1;
             String zanNum = "第" + count + "篇文章点赞数: " + zan.getText();
             int x = Integer.parseInt(zan.getText());
 
@@ -189,60 +171,8 @@ public class BihuCheckerLongSession extends Thread {
                 System.out.println(zanNum + ", 已点过赞。" + color2.toString());
             } else {
                 if (x < 500) {
-                    while (!color1.equals(color2)) {
-                        System.out.println("********** " + zanNum + ", 没点过赞，第一次点赞。赞前颜色 = " + color2.toString());
-                        zan.click();
-                        sleep(200);
-                        zan.click();
-                        sleep(200);
-                        zan.click();
-                        sleep(200);
-                        zan.click();
-                        sleep(200);
-                        zan.click();
-                        sleep(200);
-                        zan.click();
-                        sleep(200);
-                        zan.click();
-                        sleep(200);
-                        zan.click();
-                        sleep(200);
-                        zan.click();
-                        sleep(200);
-                        zan.click();
-                        color2 = getZanColor(driver.findElement(By.xpath(paper)));
-                        System.out.println("********** " + zanNum + ", 没点过赞，第一次点赞。赞后颜色 = " + color2.toString());
-
-
-                        driver.navigate().refresh();
-                        sleep(3000);
-                        waitForPageLoad(driver);
-                        waitForElement(driver, By.xpath(paper));
-                        zan = driver.findElement(By.xpath(paper));
-
-                        System.out.println("********** " + zanNum + ", 没点过赞，刷新后再赞。赞前颜色 = " + color2.toString());
-                        zan.click();
-                        sleep(200);
-                        zan.click();
-                        sleep(200);
-                        zan.click();
-                        sleep(200);
-                        zan.click();
-                        sleep(200);
-                        zan.click();
-                        sleep(200);
-                        zan.click();
-                        sleep(200);
-                        zan.click();
-                        sleep(200);
-                        zan.click();
-                        sleep(200);
-                        zan.click();
-                        sleep(200);
-                        zan.click();
-                        color2 = getZanColor(driver.findElement(By.xpath(paper)));
-                        System.out.println("********** " + zanNum + ", 没点过赞，刷新后再赞。赞后颜色 = " + color2.toString());
-                    }
+                    String pic = pics[i];
+                    CommentAndUp(pic);
                 } else {
                     System.out.println(zanNum + ", 没点过赞，大于500，跳过。" + color2.toString());
                 }
@@ -251,23 +181,7 @@ public class BihuCheckerLongSession extends Thread {
         }
     }
 
-    private void waitForElement(WebDriver driver, By by) throws Exception {
-        for (int second = 0; ; second++) {
-            if (second >= 60) Assert.fail("timeout");
-            try {
-                if (isElementPresent(by)) {
-                    break;
-                } else {
-                    driver.navigate().refresh();
-                }
-            } catch (Exception e) {
-            }
-            sleep(1000);
-        }
-    }
-
     public void closeOut() throws Exception {
-
         //点击退出登录
         driver.findElement(By.cssSelector("img[alt=\"Logo\"]")).click();
         sleep(1000);
@@ -281,14 +195,89 @@ public class BihuCheckerLongSession extends Thread {
     }
 
     private void mouseMove(WebDriver dr) throws Exception {
-
         //将鼠标移动，并选择
         Actions act = new Actions(dr);
-        WebElement dropDown = dr.findElement(By.cssSelector("img[alt=\"个人中心\"]"));
+        WebElement dropDown = dr.findElement(By.cssSelector("img[alt='个人中心']"));
         WebElement logout = dr.findElement(By.linkText("退出"));
+
         act.click(dropDown).perform();
         sleep(1000);
         act.moveToElement(logout).click().perform();
+    }
+
+    private void CommentAndUp(String pic) {
+        //原窗口句柄
+        String currentWindow = driver.getWindowHandle();
+
+        //点击打开新窗口
+        driver.findElement(By.xpath(pic)).click();
+//        String handle_new = driver.getWindowHandle();
+
+        Set<String> handles = driver.getWindowHandles();
+        Iterator<String> it = handles.iterator();
+
+        //hasNext检查序列中是否还有元素
+        while (it.hasNext()) {
+            String handle = it.next();
+            if (currentWindow.equals(handle)) continue;
+            WebDriver window = driver.switchTo().window(handle);
+
+            //点赞按钮
+            WebElement iZan = driver.findElement(By.xpath("//div[@id='root']/div/div/div/div/div[2]/div/div/div[5]/div/div[2]/button"));
+
+            String zanNum = iZan.getText();
+            System.out.println("********** 没点过赞，第一次点赞。赞前数： " + zanNum);
+
+            iZan.click();
+            try {
+                sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            String afterZan = iZan.getText();
+            System.out.println("********** 没点过赞，第一次点赞。赞后数： " + afterZan);
+
+
+            while (zanNum.equals(afterZan)) {
+                System.out.println("********** 没点过赞，第一次点赞不成功，循环点赞。赞前数： " + afterZan);
+                try {
+                    driver.navigate().refresh();
+                    sleep(2000);
+                    waitForPageLoad(driver);
+                    waitForElement(driver, By.xpath("//div[@id='root']/div/div/div/div/div[2]/div/div/div[5]/div/div[2]/button"));
+
+                    iZan = driver.findElement(By.xpath("//div[@id='root']/div/div/div/div/div[2]/div/div/div[5]/div/div[2]/button"));
+                    iZan.click();
+                    sleep(200);
+                    iZan.click();
+                    sleep(200);
+                    afterZan = iZan.getText();
+
+                    sleep(2000);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                System.out.println("********** 没点过赞，第一次点赞不成功，循环点赞。赞后数： " + afterZan);
+            }
+
+
+            //评论内容
+            driver.findElement(By.id("content")).click();
+            driver.findElement(By.id("content")).clear();
+            if (this.username.substring(0,3).equals("136")) {
+                driver.findElement(By.id("content")).sendKeys("虚心使人进步，点赞积累财富！");
+            } else {
+                driver.findElement(By.id("content")).sendKeys("每天学习一点点，每天进步一点点！");
+            }
+
+
+            //发表按钮
+            driver.findElement(By.xpath("//div[@id='root']/div/div/div/div/div[2]/div/div/div[7]/button")).click();
+            driver.close();
+        }
+
+        driver.switchTo().window(currentWindow);
     }
 
     private boolean isElementPresent(By by) {
@@ -323,5 +312,45 @@ public class BihuCheckerLongSession extends Thread {
             acceptNextAlert = true;
         }
     }
+
+    private void waitForElement(WebDriver driver, By by) throws Exception {
+        for (int second = 0; ; second++) {
+            if (second >= 60) Assert.fail("timeout");
+            try {
+                if (isElementPresent(by)) {
+                    break;
+                } else {
+                    driver.navigate().refresh();
+                }
+            } catch (Exception e) {
+            }
+            sleep(1000);
+        }
+    }
+
+    private static void waitForPageLoad(WebDriver driver) {
+        Function<WebDriver, Boolean> waitFn = new Function<WebDriver, Boolean>() {
+            @Override
+            public Boolean apply(WebDriver driver) {
+                return ((JavascriptExecutor) driver).executeScript("return document.readyState")
+                        .equals("complete");
+            }
+        };
+        WebDriverWait wait = new WebDriverWait(driver, 30);
+        wait.until(waitFn);
+    }
+
+    private static Color getZanColor(WebElement zan) {
+        String color = zan.getCssValue("color");
+        color = color.substring(4, color.length() - 1);
+        String[] strs = color.split(",");
+//        for (int i = 0, len = strs.length; i < len; i++) {
+//            System.out.println(strs[i].toString());
+//        }
+
+        java.awt.Color color2 = new java.awt.Color(Integer.parseInt(strs[0].trim()), Integer.parseInt(strs[1].trim()), Integer.parseInt(strs[2].trim()));
+        return color2;
+    }
+
 
 }
