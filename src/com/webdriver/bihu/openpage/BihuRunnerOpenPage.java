@@ -37,8 +37,8 @@ public class BihuRunnerOpenPage {
                     e.printStackTrace();
                 }
 
-                BihuCheckerOpenPage checker2 = new BihuCheckerOpenPage(users[1][0], users[1][1]);
-                checker2.start();
+//                BihuCheckerOpenPage checker2 = new BihuCheckerOpenPage(users[1][0], users[1][1]);
+//                checker2.start();
             }
         };
         Thread thread = new Thread(runnable);

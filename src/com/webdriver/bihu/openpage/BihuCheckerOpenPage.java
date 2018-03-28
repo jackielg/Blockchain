@@ -112,7 +112,7 @@ public class BihuCheckerOpenPage extends Thread {
 //        driver.findElement(By.linkText("推荐")).click();
 
         //等第一篇文章的发布时间
-        sleep(2000);
+        sleep(3000);
         waitForPageLoad(driver);
         waitForElement(driver, By.xpath("//div[@id='root']/div/div/div/div[2]/div/ul[2]/div/div/div[2]/div/p[2]"));
 
@@ -153,7 +153,7 @@ public class BihuCheckerOpenPage extends Thread {
             //点过赞的颜色
             java.awt.Color color1 = new java.awt.Color(0, 123, 255);
             //取赞颜色
-            java.awt.Color color2 = getZanColor(zan);
+            java.awt.Color color2 = getColor(zan, "color");
 
             //判断是否点过赞
             int count = i+1;
@@ -198,8 +198,9 @@ public class BihuCheckerOpenPage extends Thread {
         wait.until(waitFn);
     }
 
-    private static Color getZanColor(WebElement zan) {
-        String color = zan.getCssValue("color");
+
+    private static Color getColor(WebElement zan, String col) {
+        String color = zan.getCssValue(col);
 
         if (color.contains("rgba")) {
             color = color.substring(5, color.length() - 1);
@@ -248,11 +249,14 @@ public class BihuCheckerOpenPage extends Thread {
             //子页面内-点赞按钮
             String zanPath = "//div[@id='root']/div/div/div/div/div[2]/div/div/div[5]/div/div[2]/button";
             WebElement iZan = driver.findElement(By.xpath(zanPath));
+            //===================
+            //printWebElement(iZan);
+            //===================
 
-            //点过赞的颜色
-            java.awt.Color color1 = new java.awt.Color(0, 123, 255);
-            //取赞颜色
-            java.awt.Color color2 = getZanColor(iZan);
+            //弹出窗口，没点过赞的背景颜色
+            java.awt.Color color1 = new java.awt.Color(0, 0, 0);
+            //弹出窗口，点过赞的背景颜色，蓝色
+            java.awt.Color color2 = getColor(iZan, "background-color");
             String zanNum = iZan.getText();
             System.out.println("********** 没点过赞。弹窗赞，赞前数值:" + zanNum + ", 赞前颜色:" + color2.toString());
 
@@ -270,11 +274,21 @@ public class BihuCheckerOpenPage extends Thread {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            color2 = getZanColor(iZan); //赞后颜色
+            iZan = driver.findElement(By.xpath(zanPath));
+            //===================
+            //printWebElement(iZan);
+            //===================
+
+
+            color2 = getColor(iZan, "background-color"); //赞后背景颜色
             String afterZan = iZan.getText();
             System.out.println("********** 没点过赞。弹窗赞，赞后数值:" + afterZan + ", 赞后颜色:" + color2.toString());
 
-            while (zanNum.equals(afterZan) || !color1.equals(color2)) {
+            int count = 0;
+            while (zanNum.equals(afterZan) || color1.equals(color2)) {
+                count++;
+                if (count >= 60) Assert.fail("timeout");
+
                 System.out.println("------------- 弹窗点赞不成功，循环点赞，赞前数值:" + afterZan + ", 赞前颜色:" + color2.toString());
                 try {
                     //刷新再赞
@@ -295,7 +309,7 @@ public class BihuCheckerOpenPage extends Thread {
                     iZan.click();
                     sleep(500);
 
-                    color2 = getZanColor(iZan); //赞后颜色
+                    color2 = getColor(iZan, "background-color"); //赞后背景颜色
                     afterZan = iZan.getText();
 
                 } catch (Exception e) {
@@ -321,6 +335,15 @@ public class BihuCheckerOpenPage extends Thread {
         }
 
         driver.switchTo().window(fatherWindow);
+    }
+
+    private void printWebElement(WebElement iZan) {
+        System.out.println("^^^^^^^^^^^^ iZan.toString():" + iZan.toString());
+        System.out.println("^^^^^^^^^^^^ iZan.isDisplayed():" + iZan.isDisplayed());
+        System.out.println("^^^^^^^^^^^^ iZan.isEnabled():" + iZan.isEnabled());
+        System.out.println("^^^^^^^^^^^^ iZan.getCssValue(\"color\"):" + iZan.getCssValue("color"));
+        System.out.println("^^^^^^^^^^^^ iZan.getCssValue(\"background\"):" + iZan.getCssValue("background"));
+        System.out.println("^^^^^^^^^^^^ iZan.getCssValue(\"background-color\"):" + iZan.getCssValue("background-color"));
     }
 
     private boolean isElementPresent(By by) {
