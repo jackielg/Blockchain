@@ -52,9 +52,9 @@ public class BihuCheckerLongSession extends Thread {
         String color = zan.getCssValue("color");
         color = color.substring(4, color.length() - 1);
         String[] strs = color.split(",");
-        //            for (int i = 0, len = strs.length; i < len; i++) {
-//                System.out.println(strs[i].toString());
-//            }
+        for (int i = 0, len = strs.length; i < len; i++) {
+            System.out.println(strs[i].toString());
+        }
 
         java.awt.Color color2 = new java.awt.Color(Integer.parseInt(strs[0].trim()), Integer.parseInt(strs[1].trim()), Integer.parseInt(strs[2].trim()));
         return color2;
@@ -192,9 +192,23 @@ public class BihuCheckerLongSession extends Thread {
                     while (!color1.equals(color2)) {
                         System.out.println("********** " + zanNum + ", 没点过赞，第一次点赞。赞前颜色 = " + color2.toString());
                         zan.click();
-                        sleep(500);
+                        sleep(200);
                         zan.click();
-                        sleep(500);
+                        sleep(200);
+                        zan.click();
+                        sleep(200);
+                        zan.click();
+                        sleep(200);
+                        zan.click();
+                        sleep(200);
+                        zan.click();
+                        sleep(200);
+                        zan.click();
+                        sleep(200);
+                        zan.click();
+                        sleep(200);
+                        zan.click();
+                        sleep(200);
                         zan.click();
                         color2 = getZanColor(driver.findElement(By.xpath(paper)));
                         System.out.println("********** " + zanNum + ", 没点过赞，第一次点赞。赞后颜色 = " + color2.toString());
@@ -208,9 +222,23 @@ public class BihuCheckerLongSession extends Thread {
 
                         System.out.println("********** " + zanNum + ", 没点过赞，刷新后再赞。赞前颜色 = " + color2.toString());
                         zan.click();
-                        sleep(500);
+                        sleep(200);
                         zan.click();
-                        sleep(500);
+                        sleep(200);
+                        zan.click();
+                        sleep(200);
+                        zan.click();
+                        sleep(200);
+                        zan.click();
+                        sleep(200);
+                        zan.click();
+                        sleep(200);
+                        zan.click();
+                        sleep(200);
+                        zan.click();
+                        sleep(200);
+                        zan.click();
+                        sleep(200);
                         zan.click();
                         color2 = getZanColor(driver.findElement(By.xpath(paper)));
                         System.out.println("********** " + zanNum + ", 没点过赞，刷新后再赞。赞后颜色 = " + color2.toString());

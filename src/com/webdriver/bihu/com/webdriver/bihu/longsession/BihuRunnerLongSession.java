@@ -11,8 +11,8 @@ import static java.lang.Thread.sleep;
  */
 
 public class BihuRunnerLongSession {
-    private static String fileIn = "C:/DevTools/Blockchain/src/com/webdriver/bihu/CheckNum.txt";
-    //    private static String fileIn = "/Users/Jackie.Liu/DevTools/Blockchain/src/com/webdriver/bihu/CheckNum.txt";
+    //    private static String fileIn = "C:/DevTools/Blockchain/src/com/webdriver/bihu/CheckNum.txt";
+    private static String fileIn = "/Users/Jackie.Liu/DevTools/Blockchain/src/com/webdriver/bihu/CheckNum.txt";
     private static String[][] users = new String[2][2];
 
 
