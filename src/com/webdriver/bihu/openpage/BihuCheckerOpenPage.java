@@ -113,7 +113,7 @@ public class BihuCheckerOpenPage extends Thread {
 //        driver.findElement(By.linkText("推荐")).click();
 
         //等第一篇文章的发布时间
-        sleep(6000);
+        sleep(5000);
         waitForPageLoad(driver);
         waitForElement(driver, By.xpath("//div[@id='root']/div/div/div/div[2]/div/ul[2]/div/div/div[2]/div/p[2]"));
 
@@ -164,7 +164,7 @@ public class BihuCheckerOpenPage extends Thread {
             } else {
                 int x = Integer.parseInt(zanValue);
                 if (x > 400) {
-                    System.out.println("### 第"+count+"篇文章，没点过赞。大于500跳过。赞数值:" + zanValue + ", 赞颜色:" + color2.toString());
+                    System.out.println("### 第"+count+"篇文章，没点过赞。大于400跳过。赞数值:" + zanValue + ", 赞颜色:" + color2.toString());
                 } else {
                     String pic = pics[i];
                     CommentAndUp(pic);
