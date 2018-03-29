@@ -6,7 +6,6 @@ import org.openqa.selenium.*;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -176,14 +175,14 @@ public class BihuCheckerOpenPage extends Thread {
                     waitForElement(driver, By.xpath(paper));
                     //返回父窗口再次判断点赞是否成功
                     zan = driver.findElement(By.xpath(paper));
-                    color2 = getColor(zan, "color");
+                    java.awt.Color color3 = getColor(zan, "color");
                     zanValue = zan.getText();
 
                     int num = 0;
-                    while(!color1.equals(color2)) {
+                    while(!color1.equals(color3)) {
                         num++;
                         if (num >  3) Assert.fail("timeout");
-                        System.out.println("$$$ 第"+count+"篇文章，子窗口内点赞不成功，再次弹出子窗口点赞。赞数值:" + zanValue + ", 赞颜色:" + color2.toString());
+                        System.out.println("$$$ 第"+count+"篇文章，子窗口内点赞不成功，再次弹出子窗口点赞。赞数值:" + zanValue + ", 赞颜色:" + color3.toString());
                         CommentAndUp(pic);
 
                         //返回父窗口
@@ -193,7 +192,7 @@ public class BihuCheckerOpenPage extends Thread {
                         waitForElement(driver, By.xpath(paper));
                         //返回父窗口再次判断点赞是否成功
                         zan = driver.findElement(By.xpath(paper));
-                        color2 = getColor(zan, "color");
+                        color3 = getColor(zan, "color");
                         zanValue = zan.getText();
                     }
                 }
@@ -227,11 +226,11 @@ public class BihuCheckerOpenPage extends Thread {
             //===================
 
             //弹出窗口，没点过赞的背景颜色
-            java.awt.Color color1 = new java.awt.Color(0, 0, 0);
+            java.awt.Color icolor1 = new java.awt.Color(0, 0, 0);
             //弹出窗口，点过赞的背景颜色，蓝色
-            java.awt.Color color2 = getColor(iZan, "background-color");
+            java.awt.Color icolor2 = getColor(iZan, "background-color");
             String zanNum = iZan.getText();
-            System.out.println("********** 没点过赞。弹窗赞，赞前数值:" + zanNum + ", 赞前颜色:" + color2.toString());
+            System.out.println("********** 没点过赞。弹窗赞，赞前数值:" + zanNum + ", 赞前颜色:" + icolor2.toString());
 
             try {
                 iZan.click();
@@ -259,15 +258,15 @@ public class BihuCheckerOpenPage extends Thread {
             //printWebElement(iZan);
             //===================
 
-            color2 = getColor(iZan, "background-color"); //赞后背景颜色
+            icolor2 = getColor(iZan, "background-color"); //赞后背景颜色
             String afterZan = iZan.getText();
-            System.out.println("********** 没点过赞。弹窗赞，赞后数值:" + afterZan + ", 赞后颜色:" + color2.toString());
+            System.out.println("********** 没点过赞。弹窗赞，赞后数值:" + afterZan + ", 赞后颜色:" + icolor2.toString());
 
             int count = 0;
-            while (zanNum.equals(afterZan) || color1.equals(color2)) {
+            while (zanNum.equals(afterZan) || icolor1.equals(icolor2)) {
                 count++;
                 if (count >  3) Assert.fail("timeout");
-                System.out.println("------------- 弹窗点赞不成功，循环点赞，赞前数值:" + afterZan + ", 赞前颜色:" + color2.toString());
+                System.out.println("------------- 弹窗点赞不成功，循环点赞，赞前数值:" + afterZan + ", 赞前颜色:" + icolor2.toString());
                 try {
                     iZan = driver.findElement(By.xpath(zanPath));
                     iZan.click();
@@ -281,13 +280,13 @@ public class BihuCheckerOpenPage extends Thread {
                     iZan.click();
                     sleep(1000);
 
-                    color2 = getColor(iZan, "background-color"); //赞后背景颜色
+                    icolor2 = getColor(iZan, "background-color"); //赞后背景颜色
                     afterZan = iZan.getText();
 
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                System.out.println("------------- 弹窗点赞不成功，循环点赞，赞后数值:" + afterZan + ", 赞后颜色:" + color2.toString());
+                System.out.println("------------- 弹窗点赞不成功，循环点赞，赞后数值:" + afterZan + ", 赞后颜色:" + icolor2.toString());
             }
 
 
