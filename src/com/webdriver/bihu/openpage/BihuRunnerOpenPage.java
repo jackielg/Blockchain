@@ -1,5 +1,7 @@
 package com.webdriver.bihu.openpage;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebDriver;
 
 import java.io.BufferedReader;
@@ -21,6 +23,12 @@ public class BihuRunnerOpenPage {
     private StringBuffer verificationErrors = new StringBuffer();
 
     public static void main(String[] args) {
+
+        Logger logger = LogManager.getLogger(BihuRunnerOpenPage.class);
+//    logger.info("info level");
+//    logger.debug("debug level");
+//    logger.warn("warn level");
+
 
         BihuRunnerOpenPage running = new BihuRunnerOpenPage();
         running.loadUser();
