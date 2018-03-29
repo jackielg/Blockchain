@@ -234,15 +234,25 @@ public class BihuCheckerOpenPage extends Thread {
 
             try {
                 iZan.click();
-                sleep(1000);
+                sleep(500);
                 iZan.click();
-                sleep(1000);
+                sleep(500);
                 iZan.click();
-                sleep(1000);
+                sleep(500);
                 iZan.click();
-                sleep(1000);
+                sleep(500);
                 iZan.click();
-                sleep(1000);
+                sleep(500);
+                iZan.click();
+                sleep(500);
+                iZan.click();
+                sleep(500);
+                iZan.click();
+                sleep(500);
+                iZan.click();
+                sleep(500);
+                iZan.click();
+                sleep(500);
 
                 //刷新再赞
                 driver.navigate().refresh();
@@ -270,15 +280,25 @@ public class BihuCheckerOpenPage extends Thread {
                 try {
                     iZan = driver.findElement(By.xpath(zanPath));
                     iZan.click();
-                    sleep(1000);
+                    sleep(500);
                     iZan.click();
-                    sleep(1000);
+                    sleep(500);
                     iZan.click();
-                    sleep(1000);
+                    sleep(500);
                     iZan.click();
-                    sleep(1000);
+                    sleep(500);
                     iZan.click();
-                    sleep(1000);
+                    sleep(500);
+                    iZan.click();
+                    sleep(500);
+                    iZan.click();
+                    sleep(500);
+                    iZan.click();
+                    sleep(500);
+                    iZan.click();
+                    sleep(500);
+                    iZan.click();
+                    sleep(500);
 
                     icolor2 = getColor(iZan, "background-color"); //赞后背景颜色
                     afterZan = iZan.getText();
