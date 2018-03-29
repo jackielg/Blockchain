@@ -174,15 +174,15 @@ public class BihuCheckerOpenPage extends Thread {
                     waitForPageLoad(driver);
                     waitForElement(driver, By.xpath(paper));
                     //返回父窗口再次判断点赞是否成功
-                    zan = driver.findElement(By.xpath(paper));
-                    java.awt.Color color3 = getColor(zan, "color");
-                    zanValue = zan.getText();
+                    WebElement zanNew = driver.findElement(By.xpath(paper));
+                    java.awt.Color colorNew = getColor(zanNew, "color");
+                    zanValue = zanNew.getText();
 
                     int num = 0;
-                    while(!color1.equals(color3)) {
+                    while(!color1.equals(colorNew)) {
                         num++;
                         if (num >  3) Assert.fail("timeout");
-                        System.err.println("$$$ 第"+count+"篇文章，子窗口内点赞不成功，再次弹出子窗口点赞。赞数值:" + zanValue + ", 赞颜色:" + color3.toString());
+                        System.err.println("^^^ 第"+count+"篇文章，子窗口内点赞不成功，再次弹出子窗口点赞。赞数值:" + zanValue + ", 赞颜色:" + colorNew.toString());
                         CommentAndUp(pic);
 
                         //返回父窗口
@@ -191,9 +191,9 @@ public class BihuCheckerOpenPage extends Thread {
                         waitForPageLoad(driver);
                         waitForElement(driver, By.xpath(paper));
                         //返回父窗口再次判断点赞是否成功
-                        zan = driver.findElement(By.xpath(paper));
-                        color3 = getColor(zan, "color");
-                        zanValue = zan.getText();
+                        zanNew = driver.findElement(By.xpath(paper));
+                        colorNew = getColor(zanNew, "color");
+                        zanValue = zanNew.getText();
                     }
                 }
             }
