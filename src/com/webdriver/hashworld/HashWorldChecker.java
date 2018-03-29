@@ -167,27 +167,32 @@ public class HashWorldChecker {
         papers[1] = "//hw-treasure-block[2]/div/img";
         papers[2] = "//hw-treasure-block[3]/div/img";
 
-        //图片操作
-        for (int i = 0; i < b; i++) {
+        try {
+            //图片操作
+            for (int i = 0; i < b; i++) {
 
-            sleep(1000);
-            waitForPageLoad(driver);
-            waitForElement(driver, By.xpath(papers[i]));
-            driver.findElement(By.xpath(papers[i])).click();  //点击地标
-
-
-            sleep(1000);
-            waitForPageLoad(driver);
-            waitForElement(driver, By.xpath("//div[3]/div[2]/div"));
-            driver.findElement(By.xpath("//div[3]/div[2]/div")).click();  //开
+                sleep(1000);
+                waitForPageLoad(driver);
+                waitForElement(driver, By.xpath(papers[i]));
+                driver.findElement(By.xpath(papers[i])).click();  //点击地标
 
 
-            sleep(1000);
-            waitForPageLoad(driver);
-            waitForElement(driver, By.xpath("//button"));
-            driver.findElement(By.xpath("//button")).click();  //返回
+                sleep(1000);
+                waitForPageLoad(driver);
+                waitForElement(driver, By.xpath("//div[3]/div[2]/div"));
+                driver.findElement(By.xpath("//div[3]/div[2]/div")).click();  //开
 
-            waitForElement(driver, By.cssSelector("span.help"));
+
+                sleep(1000);
+                waitForPageLoad(driver);
+                waitForElement(driver, By.xpath("//button"));
+                driver.findElement(By.xpath("//button")).click();  //返回
+
+                waitForElement(driver, By.cssSelector("span.help"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return;
         }
 
 
