@@ -146,7 +146,7 @@ public class HashWorldChecker {
     }
 
     public void runCheck(String loginNum) throws Exception {
-
+        try {
         //强制等待，加载剩余机会数
         waitForPageLoad(driver);
         waitForElement(driver, By.cssSelector("span"));
@@ -167,7 +167,7 @@ public class HashWorldChecker {
         papers[1] = "//hw-treasure-block[2]/div/img";
         papers[2] = "//hw-treasure-block[3]/div/img";
 
-        try {
+
             //图片操作
             for (int i = 0; i < b; i++) {
 
@@ -192,7 +192,10 @@ public class HashWorldChecker {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return;
+
+            //点击退出登录
+            driver.findElement(By.xpath("//div[3]/img")).click();
+            driver.findElement(By.cssSelector("button")).click();
         }
 
 
