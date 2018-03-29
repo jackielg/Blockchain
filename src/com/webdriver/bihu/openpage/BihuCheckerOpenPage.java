@@ -6,6 +6,7 @@ import org.openqa.selenium.*;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -75,7 +76,7 @@ public class BihuCheckerOpenPage extends Thread {
         sleep(1000);
         waitForPageLoad(driver);
         waitForElement(driver, By.cssSelector("img[alt=\"Logo\"]"));
-
+        sleep(2000);
     }
 
     public void runCheck() throws Exception {
@@ -112,7 +113,7 @@ public class BihuCheckerOpenPage extends Thread {
 //        driver.findElement(By.linkText("推荐")).click();
 
         //等第一篇文章的发布时间
-        sleep(3000);
+        sleep(6000);
         waitForPageLoad(driver);
         waitForElement(driver, By.xpath("//div[@id='root']/div/div/div/div[2]/div/ul[2]/div/div/div[2]/div/p[2]"));
 

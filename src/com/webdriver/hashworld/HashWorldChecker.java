@@ -3,6 +3,7 @@ package com.webdriver.hashworld;
 import org.junit.Assert;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.*;
@@ -71,6 +72,7 @@ public class HashWorldChecker {
                 }
 
             }
+
             check.closeOut();
 
             br.close();
@@ -113,23 +115,58 @@ public class HashWorldChecker {
 
     }
 
+    private static void outputNow(String num, String CNY) throws IOException {
 
+        //文件写入流
+        OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(fileOut, true));
+        BufferedWriter bw = new BufferedWriter(out);
 
+        bw.append(num);
+        bw.append(" , ");
+        bw.append(CNY);
+        bw.newLine();
+        bw.flush();
+
+        bw.close();
+        out.close();
+    }
+
+    private static double parseCNY(String CNY) {
+        String money = CNY.trim().substring(0, CNY.length() - 3);
+
+        try {
+            return Double.parseDouble(money.trim());
+        } catch (NumberFormatException e) {
+            return 0;
+        }
+    }
+
+    private static void waitForPageLoad(WebDriver driver) {
+        Function<WebDriver, Boolean> waitFn = new Function<WebDriver, Boolean>() {
+            @Override
+            public Boolean apply(WebDriver driver) {
+                return ((JavascriptExecutor) driver).executeScript("return document.readyState")
+                        .equals("complete");
+            }
+        };
+        WebDriverWait wait = new WebDriverWait(driver, 30);
+        wait.until(waitFn);
+    }
 
     public void init() throws Exception {
-//        driver = new FirefoxDriver();
-        driver = new ChromeDriver();
+        driver = new FirefoxDriver();
+//        driver = new ChromeDriver();
         baseUrl = "https://game.hashworld.top";
         driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
         driver.manage().window().setPosition(new Point(0, 0)); //指定窗口坐标
         driver.manage().window().setSize(new Dimension(400, 800)); //指定窗口大小
         driver.get(baseUrl + "#!/login");
-//        sleep(2000);
+        sleep(500);
     }
 
     public void doLogin(String loginNum) throws Exception {
 
-//        sleep(1000);
+        sleep(500);
 //        driver.findElement(By.xpath("//div[4]/p")).click();
 
         driver.findElement(By.id("logintel")).clear();
@@ -139,7 +176,7 @@ public class HashWorldChecker {
         driver.findElement(By.id("loginpassword")).sendKeys("Liuxb0504");
         sleep(500);
         driver.findElement(By.id("loginsubmit")).click();
-        sleep(500);
+        sleep(1000);
 
         waitForPageLoad(driver);
         waitForElement(driver, By.cssSelector("span.help"));
@@ -147,25 +184,26 @@ public class HashWorldChecker {
 
     public void runCheck(String loginNum) throws Exception {
         try {
-        //强制等待，加载剩余机会数
-        waitForPageLoad(driver);
-        waitForElement(driver, By.cssSelector("span"));
-
-        String chance = driver.findElement(By.cssSelector("span")).getText();
-        if (!chance.equals("0")) {
-            //机会数不等于0，再确认一次
+            //强制等待，加载剩余机会数
             sleep(2000);
-            chance = driver.findElement(By.cssSelector("span")).getText();
-        }
+            waitForPageLoad(driver);
+            waitForElement(driver, By.cssSelector("span"));
 
-        //剩余机会数
-        int b = Integer.parseInt(chance);
+            String chance = driver.findElement(By.cssSelector("span")).getText();
+            if (!chance.equals("0")) {
+                //机会数不等于0，再确认一次
+                sleep(2000);
+                chance = driver.findElement(By.cssSelector("span")).getText();
+            }
 
-        //点击前3个图片
-        String[] papers = new String[3];
-        papers[0] = "//hw-treasure-block/div/img";
-        papers[1] = "//hw-treasure-block[2]/div/img";
-        papers[2] = "//hw-treasure-block[3]/div/img";
+            //剩余机会数
+            int b = Integer.parseInt(chance);
+
+            //点击前3个图片
+            String[] papers = new String[3];
+            papers[0] = "//hw-treasure-block/div/img";
+            papers[1] = "//hw-treasure-block[2]/div/img";
+            papers[2] = "//hw-treasure-block[3]/div/img";
 
 
             //图片操作
@@ -192,10 +230,7 @@ public class HashWorldChecker {
             }
         } catch (Exception e) {
             e.printStackTrace();
-
-            //点击退出登录
-            driver.findElement(By.xpath("//div[3]/img")).click();
-            driver.findElement(By.cssSelector("button")).click();
+            return;
         }
 
 
@@ -207,12 +242,13 @@ public class HashWorldChecker {
 
 
         //点击“我的钱包”，强制等2秒
-        sleep(2000);
+        sleep(1000);
         waitForPageLoad(driver);
         waitForElement(driver, By.xpath("//hw-my/div[2]/div"));
         driver.findElement(By.xpath("//hw-my/div[2]/div")).click();
 
         //获取“估算钱包总资产”
+        sleep(3000);
         waitForPageLoad(driver);
         String CNY = driver.findElement(By.cssSelector("h1.wa-hl-money.ng-binding")).getText();
 
@@ -246,22 +282,6 @@ public class HashWorldChecker {
         }
     }
 
-    private static void outputNow(String num, String CNY) throws IOException {
-
-        //文件写入流
-        OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(fileOut, true));
-        BufferedWriter bw = new BufferedWriter(out);
-
-        bw.append(num);
-        bw.append(" , ");
-        bw.append(CNY);
-        bw.newLine();
-        bw.flush();
-
-        bw.close();
-        out.close();
-    }
-
     private boolean isElementPresent(By by) {
         try {
             driver.findElement(by);
@@ -284,28 +304,6 @@ public class HashWorldChecker {
             }
             sleep(1000);
         }
-    }
-
-    private static double parseCNY(String CNY) {
-        String money = CNY.trim().substring(0, CNY.length() - 3);
-
-        try {
-            return Double.parseDouble(money.trim());
-        } catch (NumberFormatException e) {
-            return 0;
-        }
-    }
-
-    private static void waitForPageLoad(WebDriver driver) {
-        Function<WebDriver, Boolean> waitFn = new Function<WebDriver, Boolean>() {
-            @Override
-            public Boolean apply(WebDriver driver) {
-                return ((JavascriptExecutor) driver).executeScript("return document.readyState")
-                        .equals("complete");
-            }
-        };
-        WebDriverWait wait = new WebDriverWait(driver, 30);
-        wait.until(waitFn);
     }
 }
 
