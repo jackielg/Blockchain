@@ -56,24 +56,20 @@ public class HashWorldChecker {
             FileReader fr = new FileReader(file);
             BufferedReader br = new BufferedReader(fr);
 
-            check.init();
-
             String loginNum;
 
             while ((loginNum = br.readLine()) != null) {
 
                 count++;
-
+                check.init();
                 check.doLogin(loginNum.trim());
                 try {
                     check.runCheck(loginNum);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
+                check.closeOut();
             }
-
-            check.closeOut();
 
             br.close();
             fr.close();

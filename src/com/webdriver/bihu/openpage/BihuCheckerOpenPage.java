@@ -163,15 +163,150 @@ public class BihuCheckerOpenPage extends Thread {
                 System.out.println("### 第"+count+"篇文章，已点过赞。赞数值:" + zanValue + ", 赞颜色:" + color2.toString());
             } else {
                 int x = Integer.parseInt(zanValue);
-                if (x > 500) {
+                if (x > 400) {
                     System.out.println("### 第"+count+"篇文章，没点过赞。大于500跳过。赞数值:" + zanValue + ", 赞颜色:" + color2.toString());
                 } else {
                     String pic = pics[i];
                     CommentAndUp(pic);
-                }
 
+                    //返回父窗口
+                    driver.navigate().refresh();
+                    sleep(3000);
+                    waitForPageLoad(driver);
+                    waitForElement(driver, By.xpath(paper));
+                    //返回父窗口再次判断点赞是否成功
+                    zan = driver.findElement(By.xpath(paper));
+                    color2 = getColor(zan, "color");
+                    zanValue = zan.getText();
+
+                    int num = 0;
+                    while(!color1.equals(color2)) {
+                        num++;
+                        if (num >  3) Assert.fail("timeout");
+                        System.out.println("$$$ 第"+count+"篇文章，子窗口内点赞不成功，再次弹出子窗口点赞。赞数值:" + zanValue + ", 赞颜色:" + color2.toString());
+                        CommentAndUp(pic);
+
+                        //返回父窗口
+                        driver.navigate().refresh();
+                        sleep(3000);
+                        waitForPageLoad(driver);
+                        waitForElement(driver, By.xpath(paper));
+                        //返回父窗口再次判断点赞是否成功
+                        zan = driver.findElement(By.xpath(paper));
+                        color2 = getColor(zan, "color");
+                        zanValue = zan.getText();
+                    }
+                }
             }
         }
+    }
+
+    private void CommentAndUp(String pic) {
+        //原窗口句柄
+        String fatherWindow = driver.getWindowHandle();
+
+        //点击打开新窗口
+        driver.findElement(By.xpath(pic)).click();
+
+        Set<String> handles = driver.getWindowHandles();
+        Iterator<String> it = handles.iterator();
+
+        //hasNext检查序列中是否还有元素
+        while (it.hasNext()) {
+            String handle = it.next();
+            if (fatherWindow.equals(handle)) continue;
+
+            //找到新窗口
+            WebDriver window = driver.switchTo().window(handle);
+
+            //子页面内-点赞按钮
+            String zanPath = "//div[@id='root']/div/div/div/div/div[2]/div/div/div[5]/div/div[2]/button";
+            WebElement iZan = driver.findElement(By.xpath(zanPath));
+            //===================
+            //printWebElement(iZan);
+            //===================
+
+            //弹出窗口，没点过赞的背景颜色
+            java.awt.Color color1 = new java.awt.Color(0, 0, 0);
+            //弹出窗口，点过赞的背景颜色，蓝色
+            java.awt.Color color2 = getColor(iZan, "background-color");
+            String zanNum = iZan.getText();
+            System.out.println("********** 没点过赞。弹窗赞，赞前数值:" + zanNum + ", 赞前颜色:" + color2.toString());
+
+            try {
+                iZan.click();
+                sleep(1000);
+                iZan.click();
+                sleep(1000);
+                iZan.click();
+                sleep(1000);
+                iZan.click();
+                sleep(1000);
+                iZan.click();
+                sleep(1000);
+
+                //刷新再赞
+                driver.navigate().refresh();
+                sleep(3000);
+                waitForPageLoad(driver);
+                waitForElement(driver, By.xpath(zanPath));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            iZan = driver.findElement(By.xpath(zanPath));
+            //===================
+            //printWebElement(iZan);
+            //===================
+
+            color2 = getColor(iZan, "background-color"); //赞后背景颜色
+            String afterZan = iZan.getText();
+            System.out.println("********** 没点过赞。弹窗赞，赞后数值:" + afterZan + ", 赞后颜色:" + color2.toString());
+
+            int count = 0;
+            while (zanNum.equals(afterZan) || color1.equals(color2)) {
+                count++;
+                if (count >  3) Assert.fail("timeout");
+                System.out.println("------------- 弹窗点赞不成功，循环点赞，赞前数值:" + afterZan + ", 赞前颜色:" + color2.toString());
+                try {
+                    iZan = driver.findElement(By.xpath(zanPath));
+                    iZan.click();
+                    sleep(1000);
+                    iZan.click();
+                    sleep(1000);
+                    iZan.click();
+                    sleep(1000);
+                    iZan.click();
+                    sleep(1000);
+                    iZan.click();
+                    sleep(1000);
+
+                    color2 = getColor(iZan, "background-color"); //赞后背景颜色
+                    afterZan = iZan.getText();
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                System.out.println("------------- 弹窗点赞不成功，循环点赞，赞后数值:" + afterZan + ", 赞后颜色:" + color2.toString());
+            }
+
+
+            //评论内容
+            driver.findElement(By.id("content")).click();
+            driver.findElement(By.id("content")).clear();
+            if (this.username.substring(0, 3).equals("136")) {
+                driver.findElement(By.id("content")).sendKeys("虚心使人进步，点赞积累财富！ " + afterZan);
+            } else {
+                driver.findElement(By.id("content")).sendKeys("每天学习一点点，每天进步一点点！ " + afterZan);
+            }
+
+            //发表按钮
+            driver.findElement(By.xpath("//div[@id='root']/div/div/div/div/div[2]/div/div/div[7]/button")).click();
+            waitForPageLoad(driver);
+            driver.close();
+        }
+
+        driver.switchTo().window(fatherWindow);
     }
 
     public void closeOut() throws Exception {
@@ -227,115 +362,6 @@ public class BihuCheckerOpenPage extends Thread {
         act.click(dropDown).perform();
         sleep(1000);
         act.moveToElement(logout).click().perform();
-    }
-
-    private void CommentAndUp(String pic) {
-        //原窗口句柄
-        String fatherWindow = driver.getWindowHandle();
-
-        //点击打开新窗口
-        driver.findElement(By.xpath(pic)).click();
-
-        Set<String> handles = driver.getWindowHandles();
-        Iterator<String> it = handles.iterator();
-
-        //hasNext检查序列中是否还有元素
-        while (it.hasNext()) {
-            String handle = it.next();
-            if (fatherWindow.equals(handle)) continue;
-
-            //找到新窗口
-            WebDriver window = driver.switchTo().window(handle);
-
-            //子页面内-点赞按钮
-            String zanPath = "//div[@id='root']/div/div/div/div/div[2]/div/div/div[5]/div/div[2]/button";
-            WebElement iZan = driver.findElement(By.xpath(zanPath));
-            //===================
-            //printWebElement(iZan);
-            //===================
-
-            //弹出窗口，没点过赞的背景颜色
-            java.awt.Color color1 = new java.awt.Color(0, 0, 0);
-            //弹出窗口，点过赞的背景颜色，蓝色
-            java.awt.Color color2 = getColor(iZan, "background-color");
-            String zanNum = iZan.getText();
-            System.out.println("********** 没点过赞。弹窗赞，赞前数值:" + zanNum + ", 赞前颜色:" + color2.toString());
-
-            try {
-                iZan.click();
-                sleep(500);
-                iZan.click();
-                sleep(500);
-                iZan.click();
-                sleep(500);
-                iZan.click();
-                sleep(500);
-                iZan.click();
-                sleep(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            iZan = driver.findElement(By.xpath(zanPath));
-            //===================
-            //printWebElement(iZan);
-            //===================
-
-
-            color2 = getColor(iZan, "background-color"); //赞后背景颜色
-            String afterZan = iZan.getText();
-            System.out.println("********** 没点过赞。弹窗赞，赞后数值:" + afterZan + ", 赞后颜色:" + color2.toString());
-
-            int count = 0;
-            while (zanNum.equals(afterZan) || color1.equals(color2)) {
-                count++;
-                if (count >= 60) Assert.fail("timeout");
-
-                System.out.println("------------- 弹窗点赞不成功，循环点赞，赞前数值:" + afterZan + ", 赞前颜色:" + color2.toString());
-                try {
-                    //刷新再赞
-                    driver.navigate().refresh();
-                    sleep(2000);
-                    waitForPageLoad(driver);
-                    waitForElement(driver, By.xpath(zanPath));
-
-                    iZan = driver.findElement(By.xpath(zanPath));
-                    iZan.click();
-                    sleep(500);
-                    iZan.click();
-                    sleep(500);
-                    iZan.click();
-                    sleep(500);
-                    iZan.click();
-                    sleep(500);
-                    iZan.click();
-                    sleep(500);
-
-                    color2 = getColor(iZan, "background-color"); //赞后背景颜色
-                    afterZan = iZan.getText();
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                System.out.println("------------- 弹窗点赞不成功，循环点赞，赞后数值:" + afterZan + ", 赞后颜色:" + color2.toString());
-            }
-
-
-            //评论内容
-            driver.findElement(By.id("content")).click();
-            driver.findElement(By.id("content")).clear();
-            if (this.username.substring(0, 3).equals("136")) {
-                driver.findElement(By.id("content")).sendKeys("虚心使人进步，点赞积累财富！ " + afterZan);
-            } else {
-                driver.findElement(By.id("content")).sendKeys("每天学习一点点，每天进步一点点！ " + afterZan);
-            }
-
-            //发表按钮
-            driver.findElement(By.xpath("//div[@id='root']/div/div/div/div/div[2]/div/div/div[7]/button")).click();
-            waitForPageLoad(driver);
-            driver.close();
-        }
-
-        driver.switchTo().window(fatherWindow);
     }
 
     private void printWebElement(WebElement iZan) {
