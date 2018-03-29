@@ -182,7 +182,7 @@ public class BihuCheckerOpenPage extends Thread {
                     while(!color1.equals(color3)) {
                         num++;
                         if (num >  3) Assert.fail("timeout");
-                        System.out.println("$$$ 第"+count+"篇文章，子窗口内点赞不成功，再次弹出子窗口点赞。赞数值:" + zanValue + ", 赞颜色:" + color3.toString());
+                        System.err.println("$$$ 第"+count+"篇文章，子窗口内点赞不成功，再次弹出子窗口点赞。赞数值:" + zanValue + ", 赞颜色:" + color3.toString());
                         CommentAndUp(pic);
 
                         //返回父窗口
@@ -230,7 +230,7 @@ public class BihuCheckerOpenPage extends Thread {
             //弹出窗口，点过赞的背景颜色，蓝色
             java.awt.Color icolor2 = getColor(iZan, "background-color");
             String zanNum = iZan.getText();
-            System.out.println("********** 没点过赞。弹窗赞，赞前数值:" + zanNum + ", 赞前颜色:" + icolor2.toString());
+            System.err.println("********** 没点过赞。弹窗赞，赞前数值:" + zanNum + ", 赞前颜色:" + icolor2.toString());
 
             try {
                 iZan.click();
@@ -260,13 +260,13 @@ public class BihuCheckerOpenPage extends Thread {
 
             icolor2 = getColor(iZan, "background-color"); //赞后背景颜色
             String afterZan = iZan.getText();
-            System.out.println("********** 没点过赞。弹窗赞，赞后数值:" + afterZan + ", 赞后颜色:" + icolor2.toString());
+            System.err.println("********** 没点过赞。弹窗赞，赞后数值:" + afterZan + ", 赞后颜色:" + icolor2.toString());
 
             int count = 0;
             while (zanNum.equals(afterZan) || icolor1.equals(icolor2)) {
                 count++;
                 if (count >  3) Assert.fail("timeout");
-                System.out.println("------------- 弹窗点赞不成功，循环点赞，赞前数值:" + afterZan + ", 赞前颜色:" + icolor2.toString());
+                System.err.println("------------- 弹窗点赞不成功，循环点赞，赞前数值:" + afterZan + ", 赞前颜色:" + icolor2.toString());
                 try {
                     iZan = driver.findElement(By.xpath(zanPath));
                     iZan.click();
@@ -286,7 +286,7 @@ public class BihuCheckerOpenPage extends Thread {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                System.out.println("------------- 弹窗点赞不成功，循环点赞，赞后数值:" + afterZan + ", 赞后颜色:" + icolor2.toString());
+                System.err.println("------------- 弹窗点赞不成功，循环点赞，赞后数值:" + afterZan + ", 赞后颜色:" + icolor2.toString());
             }
 
 
