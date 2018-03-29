@@ -165,13 +165,14 @@ public class BihuCheckerOpenPage extends Thread {
         papers[3] = "//div[@id='root']/div/div/div/div[2]/div/ul[2]/div[4]/div[2]/div/div[2]/div[2]/button[1]";
         papers[4] = "//div[@id='root']/div/div/div/div[2]/div/ul[2]/div[5]/div[2]/div/div[2]/div[2]/button[1]";
 
-        //前五篇文章缩略图
-        String[] pics = new String[5];
-        pics[0] = "//img[@alt='文章缩略图']";
-        pics[1] = "(//img[@alt='文章缩略图'])[2]";
-        pics[2] = "(//img[@alt='文章缩略图'])[3]";
-        pics[3] = "(//img[@alt='文章缩略图'])[4]";
-        pics[4] = "(//img[@alt='文章缩略图'])[5]";
+
+        //前五篇文章title
+        String[] titles = new String[5];
+        titles[0] = "//div[@id='root']/div/div/div/div[2]/div/ul[2]/div/div[2]/div/div[2]/div/div";
+        titles[1] = "//div[@id='root']/div/div/div/div[2]/div/ul[2]/div[2]/div[2]/div/div[2]/div/div";
+        titles[2] = "//div[@id='root']/div/div/div/div[2]/div/ul[2]/div[3]/div[2]/div/div[2]/div/div";
+        titles[3] = "//div[@id='root']/div/div/div/div[2]/div/ul[2]/div[4]/div[2]/div/div[2]/div/div";
+        titles[4] = "//div[@id='root']/div/div/div/div[2]/div/ul[2]/div[5]/div[2]/div/div[2]/div/div";
 
 
         //点赞分析
@@ -196,8 +197,8 @@ public class BihuCheckerOpenPage extends Thread {
                 if (x >400) {
                     logger.info("### 第" + count + "篇文章，没点过赞。大于400跳过。赞数值:" + zanValue + ", 赞颜色:" + color2.toString());
                 } else {
-                    String pic = pics[i];
-                    CommentAndUp(pic);
+                    String title = titles[i];
+                    CommentAndUp(title);
 
                     //返回父窗口,在父窗口再次判断点赞是否成功
                     driver.navigate().refresh();
@@ -213,7 +214,7 @@ public class BihuCheckerOpenPage extends Thread {
                         if (num > 30) Assert.fail("timeout");
 
                         logger.warn("^^^^^ 第" + num + "次弹出窗口点赞。赞数值:" + zanValue);
-                        CommentAndUp(pic);
+                        CommentAndUp(title);
 
                         //返回父窗口
                         driver.navigate().refresh();
