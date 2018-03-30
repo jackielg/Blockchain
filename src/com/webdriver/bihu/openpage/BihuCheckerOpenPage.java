@@ -198,12 +198,12 @@ public class BihuCheckerOpenPage extends Thread {
                 if (x >400) {
                     logger.info("### 第" + count + "篇文章，没点过赞。大于400跳过。赞数值:" + zanValue + ", 赞颜色:" + color2.toString());
                 } else {
-                    logger.info("******************** 没点过赞。要赞，赞前数值1:       " + zan.getText());
-                    for (int j = 0; j < 30; j++) {
+                    logger.info("### 第" + count + "篇文章，没点过赞。赞前数值1: " + zan.getText());
+                    for (int j = 0; j < 100; j++) {
                         zan.click();
                         sleep(200);
                     }
-                    logger.info("******************** 没点过赞。要赞，赞前数值2:      " + zan.getText());
+                    logger.info("### 第" + count + "篇文章，没点过赞。赞后数值2: " + zan.getText());
                     String title = titles[i];
                     CommentAndUp(title);
 
@@ -264,7 +264,7 @@ public class BihuCheckerOpenPage extends Thread {
 
             String iZanNum2 = "";
             try {
-                for (int j = 0; j < 30; j++) {
+                for (int j = 0; j < 100; j++) {
                     iZan.click();
                     sleep(200);
                 }
