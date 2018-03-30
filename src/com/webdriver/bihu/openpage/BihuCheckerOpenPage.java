@@ -208,10 +208,10 @@ public class BihuCheckerOpenPage extends Thread {
                     }
                     logger.info("### 第" + count + "篇文章，没点过赞。赞后数值2: " + zan.getText());
 
-                    int popupCount = 1;
+
                     String title = titles[i];
-                    CommentAndUp(title, popupCount);
-                    popupCount++;
+                    CommentAndUp(title, 1);
+
 
                     //返回父窗口,在父窗口再次判断点赞是否成功
                     driver.navigate().refresh();
@@ -226,7 +226,7 @@ public class BihuCheckerOpenPage extends Thread {
                         num++;
                         if (num > 30) Assert.fail("timeout");
 
-                        CommentAndUp(title, popupCount);
+                        CommentAndUp(title, num);
 
                         //返回父窗口
                         driver.navigate().refresh();
