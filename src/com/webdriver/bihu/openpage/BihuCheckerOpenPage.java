@@ -141,26 +141,24 @@ public class BihuCheckerOpenPage extends Thread {
 
     private void checkFiveZan() throws Exception {
 
-        driver.get("https://bihu.com/?category=follow");
+        driver.findElement(By.cssSelector("img[alt=\"Logo\"]")).click();
 
-//        driver.findElement(By.cssSelector("img[alt=\"Logo\"]")).click();
-//
-////        driver.findElement(By.linkText("推荐")).click(); //“热门”
-//        driver.findElement(By.linkText("关注")).click(); //“最新”
-//        driver.navigate().refresh();
-//        sleep(2000);
-//        String zuixinPath = "//*[@id='root']/div/div[1]/div/div[2]/div/ul[1]/li/a"; //关注对应最新
-//        String zuixin = driver.findElement(By.xpath(zuixinPath)).getText();
-//
-//
-//        while (!"最新".equals(zuixin)) {
-//            driver.navigate().refresh();
-//            sleep(1000);
-//            driver.findElement(By.linkText("关注")).click();
-//            sleep(1000);
-//            waitForPageLoad(driver);
-//            zuixin = driver.findElement(By.xpath(zuixinPath)).getText();
-//        }
+//        driver.findElement(By.linkText("推荐")).click(); //“热门”
+        driver.findElement(By.linkText("关注")).click(); //“最新”
+        driver.navigate().refresh();
+        sleep(2000);
+        String zuixinPath = "//*[@id='root']/div/div[1]/div/div[2]/div/ul[1]/li/a"; //关注对应最新
+        String zuixin = driver.findElement(By.xpath(zuixinPath)).getText();
+
+
+        while (!"最新".equals(zuixin)) {
+            driver.navigate().refresh();
+            sleep(1000);
+            driver.findElement(By.linkText("关注")).click();
+            sleep(1000);
+            waitForPageLoad(driver);
+            zuixin = driver.findElement(By.xpath(zuixinPath)).getText();
+        }
 
 
         //第一篇文章的发布时间
