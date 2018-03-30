@@ -97,7 +97,7 @@ public class BihuCheckerOpenPage extends Thread {
 
         driver.get(baseUrl + "/");
         driver.findElement(By.linkText("登录")).click();
-        sleep(1000);
+        sleep(2000);
         driver.findElement(By.id("loginName")).clear();
         driver.findElement(By.id("loginName")).sendKeys(username);
 
@@ -108,6 +108,9 @@ public class BihuCheckerOpenPage extends Thread {
         sleep(1000);
         waitForPageLoad(driver);
         waitForElement(driver, By.cssSelector("img[alt=\"Logo\"]"));
+        String firstZan =  "//div[@id='root']/div/div/div/div[2]/div/ul[2]/div/div[2]/div/div[2]/div[2]/button[1]";
+        waitForElement(driver, By.xpath(firstZan));
+        logger.info("登录成功！首页第一篇文章点赞值：" + driver.findElement(By.xpath(firstZan)).getText());
         sleep(2000);
     }
 
