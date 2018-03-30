@@ -146,6 +146,8 @@ public class BihuCheckerOpenPage extends Thread {
 
 //        driver.findElement(By.linkText("推荐")).click(); //“热门”
         driver.findElement(By.linkText("关注")).click(); //“最新”
+        driver.navigate().refresh();
+        sleep(2000);
         String zuixinPath = "//*[@id='root']/div/div[1]/div/div[2]/div/ul[1]/li/a"; //关注对应最新
         String zuixin = driver.findElement(By.xpath(zuixinPath)).getText();
 
