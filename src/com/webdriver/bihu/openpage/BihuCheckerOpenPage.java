@@ -145,8 +145,11 @@ public class BihuCheckerOpenPage extends Thread {
 
 //        driver.findElement(By.linkText("推荐")).click(); //“热门”
         driver.findElement(By.linkText("关注")).click(); //“最新”
+        sleep(1000);
         driver.navigate().refresh();
-        sleep(2000);
+        sleep(1000);
+        waitForPageLoad(driver);
+
         String zuixinPath = "//*[@id='root']/div/div[1]/div/div[2]/div/ul[1]/li/a"; //关注对应最新
         String zuixin = driver.findElement(By.xpath(zuixinPath)).getText();
 
@@ -215,9 +218,9 @@ public class BihuCheckerOpenPage extends Thread {
                     logger.info("### 第" + count + "篇文章，没点过赞。大于400跳过。赞数值:" + zanValue + ", 赞颜色:" + color2.toString());
                 } else {
                     logger.info("### 第" + count + "篇文章，没点过赞。赞前数值1: " + zan.getText());
-                    for (int j = 0; j < 100; j++) {
+                    for (int j = 0; j < 10; j++) {
                         zan.click();
-                        sleep(100);
+                        sleep(200);
                     }
                     logger.info("### 第" + count + "篇文章，没点过赞。赞后数值2: " + zan.getText());
 
@@ -228,7 +231,7 @@ public class BihuCheckerOpenPage extends Thread {
 
                     //返回父窗口,在父窗口再次判断点赞是否成功
                     driver.navigate().refresh();
-                    sleep(3000);
+                    sleep(2000);
                     waitForElement(driver, By.xpath(paper));
                     WebElement zanNew = driver.findElement(By.xpath(paper));
                     java.awt.Color colorNew = getColor(zanNew, "color");
@@ -243,7 +246,7 @@ public class BihuCheckerOpenPage extends Thread {
 
                         //返回父窗口
                         driver.navigate().refresh();
-                        sleep(3000);
+                        sleep(2000);
                         waitForElement(driver, By.xpath(paper));
                         zanNew = driver.findElement(By.xpath(paper));
                         colorNew = getColor(zanNew, "color");
@@ -282,9 +285,9 @@ public class BihuCheckerOpenPage extends Thread {
 
             String iZanNum2 = "";
             try {
-                for (int j = 0; j < 100; j++) {
+                for (int j = 0; j < 10; j++) {
                     iZan.click();
-                    sleep(100);
+                    sleep(200);
                 }
 
                 waitForElement(driver, By.xpath(zanPath));
