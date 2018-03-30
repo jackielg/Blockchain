@@ -201,11 +201,14 @@ public class BihuCheckerOpenPage extends Thread {
                     logger.info("### 第" + count + "篇文章，没点过赞。赞前数值1: " + zan.getText());
                     for (int j = 0; j < 100; j++) {
                         zan.click();
-                        sleep(200);
+                        sleep(100);
                     }
                     logger.info("### 第" + count + "篇文章，没点过赞。赞后数值2: " + zan.getText());
+
+                    int popupCount = 1;
                     String title = titles[i];
-                    CommentAndUp(title);
+                    CommentAndUp(title, popupCount);
+                    popupCount++;
 
                     //返回父窗口,在父窗口再次判断点赞是否成功
                     driver.navigate().refresh();
@@ -220,8 +223,7 @@ public class BihuCheckerOpenPage extends Thread {
                         num++;
                         if (num > 30) Assert.fail("timeout");
 
-                        logger.warn("********** 第" + num + "次弹出窗口点赞。赞数值:" + zanValue);
-                        CommentAndUp(title);
+                        CommentAndUp(title, popupCount);
 
                         //返回父窗口
                         driver.navigate().refresh();
@@ -236,7 +238,7 @@ public class BihuCheckerOpenPage extends Thread {
         }
     }
 
-    private void CommentAndUp(String title) throws Exception {
+    private void CommentAndUp(String title, int popupCount) throws Exception {
         //原窗口句柄
         String fatherWindow = driver.getWindowHandle();
 
@@ -259,31 +261,31 @@ public class BihuCheckerOpenPage extends Thread {
             waitForElement(driver, By.xpath(zanPath));
             WebElement iZan = driver.findElement(By.xpath(zanPath));
             String iZanNum = iZan.getText();
-            logger.warn("***** (弹窗内)点赞，赞前数值:" + iZanNum);
+            logger.warn("***** （第"+popupCount+"次弹窗） 点赞。赞前数值:" + iZanNum);
 
 
             String iZanNum2 = "";
             try {
                 for (int j = 0; j < 100; j++) {
                     iZan.click();
-                    sleep(200);
+                    sleep(100);
                 }
 
                 waitForElement(driver, By.xpath(zanPath));
                 iZanNum2 = iZan.getText();
-                logger.warn("***** (弹窗内)，第1次点赞。赞后数值:" + iZanNum2);
+                logger.warn("***** （第"+popupCount+"次弹窗） 点赞。赞后数值:" + iZanNum2);
 
-                int ctrl = 1;
-                while (iZanNum.equals(iZanNum2)) {
-                    ctrl++;
-                    if (ctrl > 30) Assert.fail("timeout");
-
-                    iZan.click();
-                    sleep(500);
-                    waitForElement(driver, By.xpath(zanPath));
-                    iZanNum2 = iZan.getText();
-                    logger.warn("***** (弹窗内)，第" + ctrl + "次点赞。赞后数值:" + iZanNum2);
-                }
+//                int ctrl = 1;
+//                while (iZanNum.equals(iZanNum2)) {
+//                    ctrl++;
+//                    if (ctrl > 30) Assert.fail("timeout");
+//
+//                    iZan.click();
+//                    sleep(500);
+//                    waitForElement(driver, By.xpath(zanPath));
+//                    iZanNum2 = iZan.getText();
+//                    logger.warn("***** (弹窗内)，第" + ctrl + "次点赞。赞后数值:" + iZanNum2);
+//                }
             } catch (Exception e) {
                 e.printStackTrace();
                 driver.close();
@@ -298,18 +300,18 @@ public class BihuCheckerOpenPage extends Thread {
             if (this.username.substring(0, 3).equals("136")) {
                 comments = "虚心使人进步，点赞积累财富！ " + iZanNum2;
                 driver.findElement(By.id("content")).sendKeys(comments);
-                logger.info("***** (弹窗内),赞后评论[136]: " + comments);
+                logger.warn("***** （第"+popupCount+"次弹窗） 赞后评论[136]: " + comments);
             } else {
                 comments = "每天学习一点点，每天进步一点点！ " + iZanNum2;
                 driver.findElement(By.id("content")).sendKeys(comments);
-                logger.info("***** (弹窗内),赞后评论[138]: " + comments);
+                logger.warn("***** （第"+popupCount+"次弹窗） 赞后评论[138]: " + comments);
             }
 
             //发表按钮
             driver.findElement(By.xpath("//div[@id='root']/div/div/div/div/div[2]/div/div/div[7]/button")).click();
             waitForPageLoad(driver);
             driver.close();
-            logger.info("***** (弹窗内),关闭。");
+            logger.warn("***** （第"+popupCount+"次弹窗） 关闭。");
         }
 
         driver.switchTo().window(fatherWindow);
