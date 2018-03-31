@@ -1,8 +1,10 @@
 package com.webdriver.hashworld;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.openqa.selenium.*;
-import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.*;
@@ -26,7 +28,7 @@ public class HashWorldChecker {
     static Date day = new Date();
     static SimpleDateFormat df_forFile = new SimpleDateFormat("yyyy-MM-dd");
     public static String fileOut = "src/com/webdriver/hashworld/CheckedNum " + df_forFile.format(day) + ".txt";
-
+    static Logger logger = LogManager.getLogger(HashWorldChecker.class);
     private static Map<String, String> Balance = new HashMap<String, String>();
     private static Integer count = 0;
     private WebDriver driver;
@@ -34,6 +36,7 @@ public class HashWorldChecker {
     private boolean acceptNextAlert = true;
     private StringBuffer verificationErrors = new StringBuffer();
 
+    //可以不用main启动
     public static void main(String[] args) {
 
         HashWorldChecker check = new HashWorldChecker();
@@ -61,13 +64,17 @@ public class HashWorldChecker {
 
                 count++;
                 check.init();
+                logger.info("***** 启动成功");
                 check.doLogin(loginNum.trim());
+                logger.info("***** 登录成功");
                 try {
                     check.runCheck(loginNum);
+                    logger.info("***** 检查成功");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
                 check.closeOut();
+                logger.info("***** 退出成功");
             }
 
             br.close();
@@ -149,8 +156,8 @@ public class HashWorldChecker {
     }
 
     public void init() throws Exception {
-        driver = new FirefoxDriver();
-//        driver = new ChromeDriver();
+//        driver = new FirefoxDriver();
+        driver = new ChromeDriver();
         baseUrl = "https://game.hashworld.top";
         driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
         driver.manage().window().setPosition(new Point(0, 0)); //指定窗口坐标
@@ -193,6 +200,7 @@ public class HashWorldChecker {
 
             //剩余机会数
             int b = Integer.parseInt(chance);
+            logger.warn("----- 剩余机会数：" + b);
 
             //点击前3个图片
             String[] papers = new String[3];
@@ -223,6 +231,8 @@ public class HashWorldChecker {
 
                 waitForElement(driver, By.cssSelector("span.help"));
             }
+
+            logger.warn("----- 地标点击完成。");
         } catch (Exception e) {
             e.printStackTrace();
             return;
@@ -236,7 +246,7 @@ public class HashWorldChecker {
         driver.findElement(By.xpath("//div[3]/img")).click();
 
 
-        //点击“我的钱包”，强制等2秒
+        //点击“我的钱包”，强制等
         sleep(1000);
         waitForPageLoad(driver);
         waitForElement(driver, By.xpath("//hw-my/div[2]/div"));
@@ -253,10 +263,12 @@ public class HashWorldChecker {
             waitForPageLoad(driver);
             CNY = driver.findElement(By.cssSelector("h1.wa-hl-money.ng-binding")).getText();
         }
+        logger.warn("----- 该账号金额：" + CNY);
 
         //逐条输出金额
         outputNow(loginNum, CNY);
-        System.out.println("### " + count + ": " + loginNum + " has " + CNY + ". ###");
+        logger.warn("----- " + count + ": " + loginNum + " has " + CNY + ". ###");
+
         Balance.put(loginNum, CNY);
 
         //浏览器回退
