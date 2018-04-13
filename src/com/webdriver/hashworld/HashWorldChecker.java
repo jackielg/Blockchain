@@ -87,7 +87,7 @@ public class HashWorldChecker {
     public static void outputBalance() throws IOException {
 
         //文件写入流
-        OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(fileOut, true));
+        OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(fileOut, false));
         BufferedWriter bw = new BufferedWriter(out);
         double count = 0;
 
@@ -212,19 +212,19 @@ public class HashWorldChecker {
             //图片操作
             for (int i = 0; i < b; i++) {
 
-                sleep(1000);
+                sleep(1500);
                 waitForPageLoad(driver);
                 waitForElement(driver, By.xpath(papers[i]));
                 driver.findElement(By.xpath(papers[i])).click();  //点击地标
 
 
-                sleep(1000);
+                sleep(1500);
                 waitForPageLoad(driver);
                 waitForElement(driver, By.xpath("//div[3]/div[2]/div"));
                 driver.findElement(By.xpath("//div[3]/div[2]/div")).click();  //开
 
 
-                sleep(1000);
+                sleep(1500);
                 waitForPageLoad(driver);
                 waitForElement(driver, By.xpath("//button"));
                 driver.findElement(By.xpath("//button")).click();  //返回
@@ -249,17 +249,17 @@ public class HashWorldChecker {
         //点击“我的钱包”，强制等
         sleep(1000);
         waitForPageLoad(driver);
-        waitForElement(driver, By.xpath("//hw-my/div[2]/div"));
-        driver.findElement(By.xpath("//hw-my/div[2]/div")).click();
+        waitForElement(driver, By.xpath("/html/body/ui-view/hw-index/hw-tabbar/ui-view/hw-my/div[3]/div[1]/div"));
+        driver.findElement(By.xpath("/html/body/ui-view/hw-index/hw-tabbar/ui-view/hw-my/div[3]/div[1]/div")).click();
 
         //获取“估算钱包总资产”
-        sleep(3000);
+        sleep(2000);
         waitForPageLoad(driver);
         String CNY = driver.findElement(By.cssSelector("h1.wa-hl-money.ng-binding")).getText();
 
-        while (CNY.contains("0.00")) {
+        while (CNY.contains("0.0000")) {
             driver.navigate().refresh();
-            sleep(2000);
+            sleep(3000);
             waitForPageLoad(driver);
             CNY = driver.findElement(By.cssSelector("h1.wa-hl-money.ng-binding")).getText();
         }
@@ -278,7 +278,7 @@ public class HashWorldChecker {
 
 
         //点击退出登录
-        driver.findElement(By.cssSelector("button")).click();
+        driver.findElement(By.xpath("/html/body/ui-view/hw-index/hw-tabbar/ui-view/hw-my/div[3]/div[9]/div")).click();
     }
 
     public void closeOut() throws Exception {
@@ -291,8 +291,13 @@ public class HashWorldChecker {
 
     private boolean isElementPresent(By by) {
         try {
-            driver.findElement(by);
-            return true;
+            if(driver.findElement(by).isDisplayed()) {
+                return true;
+            } else {
+                driver.navigate().refresh();
+                driver.findElement(by);
+                return true;
+            }
         } catch (NoSuchElementException e) {
             return false;
         }
